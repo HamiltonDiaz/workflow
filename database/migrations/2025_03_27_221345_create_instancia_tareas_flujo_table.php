@@ -19,6 +19,7 @@ return new class extends Migration
             $table->date('fecha_vencimiento')->nullable();
             $table->integer('orden'); 
             $table->integer('es_final')->default(0);
+            $table->integer('es_editable')->default(0);
             $table->unsignedBigInteger('instancia_paso_flujo_id');
             $table->unsignedBigInteger('estado');
             $table->unsignedBigInteger('asignado_a');
