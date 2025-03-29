@@ -21,7 +21,7 @@ class ListaElemento extends Model
 
     public function tipoListaElemento():BelongsTo
     {
-        return $this->belongsTo(User::class, 'tipo_lista_elemento_id');
+        return $this->belongsTo(TipoListaElemento::class, 'tipo_lista_elemento_id');
     }
 
 
