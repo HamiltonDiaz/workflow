@@ -25,13 +25,13 @@ class ListaElementoResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('nombre')
-                    ->required()
-                    ->maxLength(255),
                 Forms\Components\Select::make('tipo_lista_elemento_id')
                     ->label("Tipo")
                     ->relationship('tipoListaElemento', 'nombre')
                     ->required(),
+                Forms\Components\TextInput::make('nombre')
+                    ->required()
+                    ->maxLength(255),
             ]);
     }
 
@@ -39,15 +39,15 @@ class ListaElementoResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('nombre')
-                    ->searchable(),
                 Tables\Columns\TextColumn::make('tipoListaElemento.nombre')
-                    ->label("Tipo")                    
+                    ->formatStateUsing(fn ($state) => mb_strtoupper($state))
+                    ->label("Tipo")
+                    ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('deleted_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('nombre')
+                    ->formatStateUsing(fn ($state) => mb_strtoupper($state))    
+                    ->searchable()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -62,14 +62,14 @@ class ListaElementoResource extends Resource
             ])
             ->actions([
                 Tables\Actions\ViewAction::make()
-                ->label('')
-                ->tooltip('Ver'),
+                    ->label('')
+                    ->tooltip('Ver'),
                 Tables\Actions\EditAction::make()
-                ->label('')
-                ->tooltip('Editar'),
+                    ->label('')
+                    ->tooltip('Editar'),
                 Tables\Actions\DeleteAction::make()
-                ->tooltip('Eliminar')
-                ->label(''),
+                    ->tooltip('Eliminar')
+                    ->label(''),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -90,7 +90,7 @@ class ListaElementoResource extends Resource
         return [
             'index' => Pages\ListListaElementos::route('/'),
             'create' => Pages\CreateListaElemento::route('/create'),
-            'view' => Pages\ViewListaElemento::route('/{record}'),
+            //'view' => Pages\ViewListaElemento::route('/{record}'),
             'edit' => Pages\EditListaElemento::route('/{record}/edit'),
         ];
     }

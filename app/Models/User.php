@@ -3,11 +3,15 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use App\Enums\GlobalEnums;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Validation\Rule;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 
 class User extends Authenticatable
@@ -51,16 +55,33 @@ class User extends Authenticatable
         ];
     }
 
-    public static function getValidationRules($record = null): array
+    //Relaciones
+    public function listaElementos():BelongsTo
     {
-        return [
-            'numero_id' => [
-                'required',
-                Rule::unique('users', 'numero_documento')
-                    ->where('tipo_id', request()->input('tipo_documento'))
-                    ->ignore($record?->id) // Ignora el usuario actual si está editando
-            ],
-            'tipo_id' => ['required'], // Asegurar que 'tipo_id' también sea obligatorio
-        ];
+        return $this->belongsTo(ListaElemento::class, 'tipo_documento')
+        ->where('tipo_lista_elemento_id',GlobalEnums::TIPO_DOCUMENTO->value());
     }
+
+    public function asignadoA():HasMany
+    {
+        return $this->hasMany(InstanciaTareaFlujo::class, 'asignado_a');
+    }
+
+    public function asignadoPor():HasMany
+    {
+        return $this->hasMany(InstanciaTareaFlujo::class, 'asignado_por');
+    }
+
+    public function historicoTareas():HasMany
+    {
+        return $this->hasMany(HistoricoTarea::class, 'user_id');
+    }
+
+    public function comentario():HasMany
+    {
+        return $this->hasMany(Comentario::class, 'user_id');
+    }
+
+    
+
 }

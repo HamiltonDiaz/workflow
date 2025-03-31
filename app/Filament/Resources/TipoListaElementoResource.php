@@ -39,13 +39,12 @@ class TipoListaElementoResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('nombre')
+                    ->formatStateUsing(fn ($state) => mb_strtoupper($state))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('descripcion')
+                    ->formatStateUsing(fn ($state) => mb_strtoupper($state))
+                    ->limit(50)
                     ->searchable(),
-                Tables\Columns\TextColumn::make('deleted_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

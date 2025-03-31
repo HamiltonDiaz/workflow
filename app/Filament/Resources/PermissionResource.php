@@ -2,16 +2,23 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\PermissionActionEnum;
 use App\Filament\Resources\PermissionResource\Pages;
 use App\Filament\Resources\PermissionResource\RelationManagers;
 use App\Models\Permission;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Card;
+use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Str;
+
 
 class PermissionResource extends Resource
 {
@@ -23,18 +30,71 @@ class PermissionResource extends Resource
     protected static ?string $navigationGroup = 'Parámetros';
     protected static ?int $navigationSort = 2;
 
+
+    // Definir los modelos que serán excluidos de la lista
+    protected static array $excludedModels = [
+        'PersonalAccessToken',
+        'PasswordResetToken',
+        'Media',
+        'Audit',
+        'Setting',
+        'Migration',
+        'Job',
+        'FailedJob',
+    ];
+
+
     public static function form(Form $form): Form
     {
+
+        // Obtener modelos de la aplicación excluyendo los no deseados
+        $modelOptions = self::getAvailableModels();
+
+        $actionOptions =PermissionActionEnum::asSelectArray();
+
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
+                Select::make('modelo')
+                    ->label('Modelo')
+                    ->options($modelOptions)
+                    ->searchable()
                     ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('guard_name')
-                    ->default('web')
-                    ->helperText('Siempre es "web"')
+                    ->live()
+                    ->afterStateUpdated(function (\Filament\Forms\Set $set, \Filament\Forms\Get $get) {
+                        $modelo = $get('modelo');
+                        $accion = $get('accion');
+                        if ($modelo && $accion && $accion !== 'custom') {
+                            $set('name', "$modelo.$accion");
+                        }
+                    }),
+
+                Select::make('accion')
+                    ->label('Acción')
+                    ->options($actionOptions)
                     ->required()
-                    ->maxLength(255),
+                    ->live()
+                    ->afterStateUpdated(function (\Filament\Forms\Set $set, \Filament\Forms\Get $get) {
+                        $modelo = $get('modelo');
+                        $accion = $get('accion');
+                        if ($modelo && $accion && $accion !== 'custom') {
+                            $set('name', "$modelo.$accion");
+                        }
+                    }),
+
+                TextInput::make('name')
+                    ->label('Nombre del permiso')
+                    ->helperText('Este será el nombre del permiso registrado')
+                    ->required()
+                    ->disabled()
+                    ->dehydrated(true)
+                    ->live(),
+                Select::make('roles')
+                    ->relationship('roles', 'name')
+                    ->multiple()
+                    ->preload()
+                    ->label('Roles asignados'),
+
+
             ]);
     }
 
@@ -42,6 +102,10 @@ class PermissionResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('modelo')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('accion')
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('guard_name')
@@ -60,14 +124,14 @@ class PermissionResource extends Resource
             ])
             ->actions([
                 Tables\Actions\ViewAction::make()
-                ->label('')
-                ->tooltip('Ver'),
+                    ->label('')
+                    ->tooltip('Ver'),
                 Tables\Actions\EditAction::make()
-                ->label('')
-                ->tooltip('Editar'),
+                    ->label('')
+                    ->tooltip('Editar'),
                 Tables\Actions\DeleteAction::make()
-                ->tooltip('Eliminar')
-                ->label(''),
+                    ->tooltip('Eliminar')
+                    ->label(''),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -88,8 +152,29 @@ class PermissionResource extends Resource
         return [
             'index' => Pages\ListPermissions::route('/'),
             'create' => Pages\CreatePermission::route('/create'),
-            'view' => Pages\ViewPermission::route('/{record}'),
+            //'view' => Pages\ViewPermission::route('/{record}'),
             'edit' => Pages\EditPermission::route('/{record}/edit'),
         ];
+    }
+
+    /**
+     * Obtiene la lista de modelos disponibles para permisos
+     */
+    protected static function getAvailableModels(): array
+    {
+        $modelOptions = [];
+        $modelFiles = glob(app_path('Models') . '/*.php');
+
+        foreach ($modelFiles as $file) {
+            $modelName = pathinfo($file, PATHINFO_FILENAME);
+
+            // Excluir modelos de la lista
+            if (!in_array($modelName, static::$excludedModels)) {
+                $modelNameLower = Str::lower($modelName);
+                $modelOptions[$modelNameLower] = $modelName;
+            }
+        }
+
+        return $modelOptions;
     }
 }

@@ -27,9 +27,10 @@ class UserResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('tipo_documento')
-                    ->required()
-                    ->numeric(),
+                Forms\Components\Select::make('listaElementos')
+                    ->relationship(name:'listaElementos', titleAttribute: 'nombre')                    
+                    ->label('Tipo documento')
+                    ->preload(),                    
                 Forms\Components\TextInput::make('numero_documento')
                     ->required()
                     ->maxLength(255),
@@ -58,24 +59,24 @@ class UserResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+        
             ->columns([
-                Tables\Columns\TextColumn::make('tipo_documento')
-                    ->numeric()
+                Tables\Columns\TextColumn::make('listaElementos.nombre')
+                    ->label('Tipo documento')
+                    ->formatStateUsing(fn ($state) => mb_strtoupper($state))
                     ->sortable(),
                 Tables\Columns\TextColumn::make('numero_documento')
+                    ->label('Número')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('name')
                     ->label('Nombre')
+                    ->formatStateUsing(fn ($state) => mb_strtoupper($state))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email_verified_at')
                     ->dateTime()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('deleted_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

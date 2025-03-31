@@ -35,7 +35,8 @@ class RoleResource extends Resource
                     ->maxLength(255),
                 Forms\Components\TextInput::make('guard_name')
                     ->default('web')
-                    ->helperText('Siempre es "web"')
+                    ->hidden()
+                    ->dehydrated(true)
                     ->required()
                     ->maxLength(255),
                 Forms\Components\Select::make('permissions')

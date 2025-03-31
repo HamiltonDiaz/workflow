@@ -14,9 +14,11 @@ class CreatePermission extends CreateRecord
 
     protected function beforeCreate(): void
     {
-
+    
+        //Configuración de campos
         $this->data['guard_name'] = "web";
 
+        
         //TODO: Esto es para hacer validaciones antes de guardar
         $existingRegister = Permission::withTrashed()
             ->where('name', $this->data['name'])

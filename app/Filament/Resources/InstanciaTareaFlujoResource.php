@@ -93,10 +93,6 @@ class InstanciaTareaFlujoResource extends Resource
                 Tables\Columns\TextColumn::make('asignado_por')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('deleted_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
