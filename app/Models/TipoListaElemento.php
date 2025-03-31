@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\SoftDeleteManagementTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -11,7 +12,7 @@ use Filament\Notifications\Notification;
 class TipoListaElemento extends Model
 {
 
-    use  HasFactory, SoftDeletes;
+    use  HasFactory, SoftDeletes, SoftDeleteManagementTrait; //SoftDeleteManagementTrait: Metodo propio
     protected $table = 'tipo_lista_elementos';
 
 
@@ -35,47 +36,6 @@ class TipoListaElemento extends Model
                 return false; // Cancela la eliminación
             }
         });
-    }
-
-    //Métodos de validación del modelo
-
-    public static function deletedRegister($data)
-    {
-        $nombre = $data['nombre'];        
-        $query = self::withTrashed()->where('nombre', $nombre);
-
-        $existingRegister = $query->first();
-        if ($existingRegister && $existingRegister->trashed()) {
-            // Si es una actualización modificar el registro eliminado
-            if (!empty($data['id'])) {
-                if ($existingRegister->id != $data['id']) {
-                    $existingRegister->nombre = $existingRegister->nombre . ' (reutilizado en el id ' . $data['id'] . ' el ' . now();
-                    $existingRegister->save();
-                }
-            } else {
-                //Se restaura el archivo eliminado
-                $existingRegister->restore();
-            }
-            return $existingRegister;
-        }
-        return null;
-    }
-
-    public static function duplicatedRegister($data)
-    {
-        $nombre = $data['nombre'];
-        $query = self::withoutTrashed()
-            ->where('nombre', $nombre);//self:: es para llamar el mismo modelo de la clase
-
-        // Si es una actualización, ignorar el registro actual
-        if (!empty($data['id'])) {
-            $query->where('id', '!=', $data['id']);
-        }
-
-        if ($query->first()) {
-            return true;
-        }
-        return false;
     }
 
 

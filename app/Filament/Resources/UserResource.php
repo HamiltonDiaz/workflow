@@ -27,7 +27,7 @@ class UserResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('listaElementos')
+                Forms\Components\Select::make('tipo_documento')
                     ->relationship(name:'listaElementos', titleAttribute: 'nombre')                    
                     ->label('Tipo documento')
                     ->preload(),                    
@@ -41,7 +41,11 @@ class UserResource extends Resource
                 Forms\Components\TextInput::make('email')
                     ->email()
                     ->required()
-                    ->maxLength(255),                    
+                    ->maxLength(255)
+                    ->unique(ignoreRecord: true)//TODO: Esto consulta en la base de datos antes de crear
+                    ->validationMessages([
+                        'unique' => 'Ya existe un registro con este correo.'
+                    ]),                    
                 Forms\Components\DateTimePicker::make('email_verified_at'),
                 Forms\Components\TextInput::make('password')
                     ->password()
