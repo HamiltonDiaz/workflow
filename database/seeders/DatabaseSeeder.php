@@ -2,8 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\FlujoTrabajo;
-use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -18,7 +16,7 @@ class DatabaseSeeder extends Seeder
             TipoListaElementosSeeder::class,
             ListaElementosSeeder::class,
             UsersTableSeeder::class,
-            FlujoTrabajo::class,
+            FlujoSeeder::class,
             PasosSeeder::class,
             TareasSeeder::class
         ]);
