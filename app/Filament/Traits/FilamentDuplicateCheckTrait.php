@@ -20,7 +20,7 @@ trait FilamentDuplicateCheckTrait
      * @param array $data Los datos del formulario
      * @param array $fields Los campos a verificar para duplicados
      * @param string|null $modelClass La clase del modelo a usar (Por defecto la clase relacionada con el recurso)
-     * @param string nombre de campo que se va a mostrar en la tarjeta de notificación.
+     * @param string nombre de campo que se va a mostrar en la tarjeta de notificación y se va a modificar cuando se reutilice.
      * @return void
      */
     protected function checkDuplicatesAndRestoreDeleted(array $data, array $fields, string $nombreRegistro): void
@@ -41,7 +41,9 @@ trait FilamentDuplicateCheckTrait
         }
 
         // Validar si el registro está eliminado y restaurarlo
-        $existingRegister = $modelo->deletedRegister($data, $fields);
+        //nombreRegistro=> este campo es para mostar en la tarjeta emergente y para 
+        //que sea modificado en la bbdd cuando se va reutilizar el nombre en una edición.
+        $existingRegister = $modelo->deletedRegister($data, $fields, $nombreRegistro);
         if ($existingRegister) {
             if ($this instanceof \Filament\Resources\Pages\CreateRecord) {
                 Notification::make()

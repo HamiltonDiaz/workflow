@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\SoftDeleteManagementTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Permission\Models\Role as ModelsRole;
@@ -12,7 +13,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 class Role extends ModelsRole
 {
     use HasFactory, SoftDeletes;
-
+    use SoftDeleteManagementTrait; //Metodo propio
       /**
      * Relación con los permisos
      */

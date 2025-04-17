@@ -20,6 +20,7 @@ return new class extends Migration
             $table->integer('orden'); 
             $table->integer('es_final')->default(0);
             $table->integer('es_editable')->default(0);
+            $table->text('ruta_archivo',800)->nullable();
             $table->unsignedBigInteger('instancia_paso_flujo_id');
             $table->unsignedBigInteger('estado');
             $table->unsignedBigInteger('asignado_a');

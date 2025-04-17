@@ -20,6 +20,7 @@ class InstanciaTareaFlujo extends Model
         'fecha_inicio',
         'fecha_vencimiento',
         'orden',
+        'ruta_archivo',
         'es_final',
         'instancia_paso_flujo_id',
         'estado',

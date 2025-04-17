@@ -30,7 +30,8 @@ class User extends Authenticatable
         'email',
         'password',
         'tipo_documento',
-        'numero_documento'
+        'numero_documento',
+        'cargo'
     ];
 
     /**
