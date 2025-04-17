@@ -28,7 +28,7 @@ class PasosSeeder extends Seeder
         $paso2->nombre = 'Validación de información';
         $paso2->descripcion = 'Verificar que la información del cliente coincida con los registros internos.';
         $paso2->orden = 1;
-        $paso1->flujo_trabajo_id=1;
+        $paso2->flujo_trabajo_id=1;
         $paso2->es_final = 0;
         $paso2->save();
 
