@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\FlujoTrabajo;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -16,7 +17,10 @@ class DatabaseSeeder extends Seeder
         $this->call([
             TipoListaElementosSeeder::class,
             ListaElementosSeeder::class,
-            UsersTableSeeder::class
+            UsersTableSeeder::class,
+            FlujoTrabajo::class,
+            PasosSeeder::class,
+            TareasSeeder::class
         ]);
     }
 }

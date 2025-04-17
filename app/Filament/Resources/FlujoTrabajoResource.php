@@ -41,6 +41,9 @@ class FlujoTrabajoResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('nombre')
                     ->searchable(),
+                Tables\Columns\TextColumn::make('descripcion')
+                    ->limit(40)
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -83,7 +86,7 @@ class FlujoTrabajoResource extends Resource
         return [
             'index' => Pages\ListFlujoTrabajos::route('/'),
             'create' => Pages\CreateFlujoTrabajo::route('/create'),
-            'view' => Pages\ViewFlujoTrabajo::route('/{record}'),
+            //'view' => Pages\ViewFlujoTrabajo::route('/{record}'),
             'edit' => Pages\EditFlujoTrabajo::route('/{record}/edit'),
         ];
     }

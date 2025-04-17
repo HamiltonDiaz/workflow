@@ -2,15 +2,18 @@
 
 namespace App\Models;
 
+use App\Traits\SoftDeleteManagementTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Ramsey\Uuid\Type\Integer;
 
 class PasoFlujo extends Model
 {
     use  HasFactory, SoftDeletes;
+    use SoftDeleteManagementTrait; //Metodo propio
     protected $table = 'pasos_flujo';
 
 
@@ -32,5 +35,39 @@ class PasoFlujo extends Model
     {
         return $this->hasMany(TareaFlujo::class, 'pasos_flujo_id');
     }
-   
+
+    
+    public static function buscarOrden($flujoId, $ordenActual = null)
+    {        
+        $resultado = self::where('flujo_trabajo_id', $flujoId)
+                    ->where('deleted_at', null)
+                    ->count();
+        
+        // Si no hay registros, retornar array con el número 1
+        if ($resultado == 0) {
+            return [1];
+        }       
+
+        $maximo = self::where('flujo_trabajo_id', $flujoId)
+                        ->where('deleted_at', null)
+                        ->max('orden');
+        
+        // Obtener todos los órdenes existentes excepto el actual (si existe)
+        $query = self::where('flujo_trabajo_id', $flujoId)
+                ->where('deleted_at', null);
+        if ($ordenActual) {
+            $query->where('orden', '!=', $ordenActual);
+        }
+        $ordenesExistentes = $query->pluck('orden')->toArray();
+
+        // Crear array con números disponibles
+        $numerosDisponibles = [];
+        for ($i = 1; $i <= $maximo + 1; $i++) {
+            if (!in_array($i, $ordenesExistentes) || $i == $ordenActual) {
+                $numerosDisponibles[] = $i;
+            }
+        }
+
+        return empty($numerosDisponibles) ? [$maximo + 1] : $numerosDisponibles;
+    }
 }

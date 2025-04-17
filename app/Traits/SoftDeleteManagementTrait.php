@@ -15,9 +15,10 @@ trait SoftDeleteManagementTrait
      * 
      * @param array $data Datos del registro
      * @param array|null $fields Campos a usar para la verificación ['campo1', 'campo2',...]
+     * @param string $nombreCampoEdicion Indica el campo en la entidad que se va a modificar para ser reutilizado.
      * @return mixed|null El registro restaurado o null
      */
-    public function deletedRegister($data, ?array $fields = null)
+    public function deletedRegister($data, ?array $fields = null, string $nombreCampoEdicion)
     {
 
         if ($fields) {
@@ -33,9 +34,9 @@ trait SoftDeleteManagementTrait
 
             if ($existingRegister && $existingRegister->trashed()) {
                 // Si es una actualización, modificar el registro eliminado
-                if (!empty($data['id'])) {
+                if (!empty($data['id'])) {                    
                     if ($existingRegister->id != $data['id']) {
-                        $existingRegister->nombre = $existingRegister->nombre . ' (reutilizado en el id ' . $data['id'] . ' el ' . now() . ')';
+                        $existingRegister[$nombreCampoEdicion] = $existingRegister[$nombreCampoEdicion] . ' (reutilizado en el id ' . $data['id'] . ' el ' . now() . ')';
                         $existingRegister->save();
                     }
                 } else {
