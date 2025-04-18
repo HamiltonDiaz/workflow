@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Traits\SoftDeleteManagementTrait;
+use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -19,6 +20,23 @@ class FlujoTrabajo extends Model
         'nombre',
         'descripcion',
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function ($register) {
+            // Verifica si tiene registros en otras tablas relacionadas
+            if ($register->pasosFlujo()->exists() || $register->instanciaFlujoTrabajo()->exists()) {
+                Notification::make()
+                    ->title('Error al eliminar')
+                    ->danger()
+                    ->body('No se puede eliminar porque tiene registros asociados.')
+                    ->send();
+                return false; // Cancela la eliminación
+            }
+        });
+    }
 
 
     public function pasosFlujo():HasMany

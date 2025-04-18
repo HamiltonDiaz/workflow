@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\GlobalEnums;
 use App\Filament\Resources\InstanciaPasoFlujoResource\Pages;
 use App\Filament\Resources\InstanciaPasoFlujoResource\RelationManagers;
 use App\Models\InstanciaPasoFlujo;
@@ -19,32 +20,52 @@ class InstanciaPasoFlujoResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-document-check';
     protected static ?string $navigationLabel = 'Pasos';
-    protected static ?string $modelLabel = 'Paso';
+    protected static ?string $modelLabel = 'Instancia pasos';
     protected static ?string $navigationGroup = 'Instancias flujos';
     protected static ?int $navigationSort = 2;
+
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
+                Forms\Components\Select::make('instancia_flujo_trabajo_id')
+                    ->relationship('instanciaFlujoTrabajo', 'nombre')
+                    ->live()
+                    ->required(),
                 Forms\Components\TextInput::make('nombre')
                     ->required()
                     ->maxLength(255),
                 Forms\Components\Textarea::make('descripcion')
                     ->columnSpanFull(),
-                Forms\Components\TextInput::make('orden')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('es_final')
-                    ->required()
-                    ->numeric()
-                    ->default(0),
-                Forms\Components\Select::make('instancia_flujo_trabajo_id')
-                    ->relationship('instanciaFlujoTrabajo', 'id')
-                    ->required(),
-                Forms\Components\TextInput::make('estado')
-                    ->required()
-                    ->numeric(),
+                Forms\Components\Grid::make()
+                    ->columns(12)
+                    ->schema([
+                        Forms\Components\Select::make('orden')
+                            ->required()
+                            ->options(function (Forms\Get $get, $record) {
+                                $flujoId = $get('instancia_flujo_trabajo_id');
+                                if (!$flujoId) {
+                                    return [1];
+                                }
+                                $ordenActual = $record ? $record->orden : null;
+                                $ordenes = InstanciaPasoFlujo::buscarOrden($flujoId, $ordenActual, 'instancia_flujo_trabajo_id');
+                                return array_combine($ordenes, $ordenes);
+                            })
+                            ->live()
+                            ->afterStateUpdated(fn(Forms\Set $set) => $set('orden', fn($state) => $state))
+                            ->columnSpan(['xs' => 12,'md' => 12, 'xl' => 4]),
+                        Forms\Components\Select::make('estado')
+                            ->label('Estado')
+                            ->relationship('listaElementos', 'nombre')
+                            ->required()
+                            ->columnSpan(['xs' => 12,'md' => 12, 'xl' => 4]),
+                        Forms\Components\Toggle::make('es_final')
+                            ->required()
+                            ->default(0)
+                            ->columnSpan(['xs' => 12,'md' => 12, 'xl' => 4]),
+
+                    ]),
             ]);
     }
 
@@ -52,19 +73,37 @@ class InstanciaPasoFlujoResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('instanciaFlujoTrabajo.nombre')
+                    ->numeric()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('nombre')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('orden')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('es_final')
-                    ->numeric()
+                Tables\Columns\IconColumn::make('estado')
+                    ->icons([
+                        'heroicon-o-arrow-right-circle' => GlobalEnums::ACTIVO_INSTANCIA_PASO->value(), // Activo
+                        'heroicon-o-pause-circle' => GlobalEnums::PAUSA_INSTANCIA_PASO->value(), // Pausado
+                        'heroicon-o-check-circle' => GlobalEnums::COMPLETO_INSTANCIA_PASO->value(), // Completo
+                    ])
+                    ->colors([
+                        'success' => GlobalEnums::COMPLETO_INSTANCIA_PASO->value(), // Verde para completo
+                        'gray' => GlobalEnums::PAUSA_INSTANCIA_PASO->value(), // Amarillo para pausado
+                        'info' => GlobalEnums::ACTIVO_INSTANCIA_PASO->value(), // Azul para activo
+                    ])
+                    ->tooltip(fn(int $state): string => match ($state) {
+                        GlobalEnums::ACTIVO_INSTANCIA_PASO->value() => 'Activo',
+                        GlobalEnums::PAUSA_INSTANCIA_PASO->value() => 'Pausado',
+                        GlobalEnums::COMPLETO_INSTANCIA_PASO->value() => 'Completo',
+                        default => 'Desconocido',
+                    })
                     ->sortable(),
-                Tables\Columns\TextColumn::make('instanciaFlujoTrabajo.id')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('estado')
-                    ->numeric()
+                Tables\Columns\IconColumn::make('es_final')
+                    ->label('Es Final')
+                    ->boolean()
+                    ->trueIcon('heroicon-o-check-circle')
+                    ->falseIcon('heroicon-o-x-circle')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
@@ -80,14 +119,14 @@ class InstanciaPasoFlujoResource extends Resource
             ])
             ->actions([
                 Tables\Actions\ViewAction::make()
-                ->label('')
-                ->tooltip('Ver'),
+                    ->label('')
+                    ->tooltip('Ver'),
                 Tables\Actions\EditAction::make()
-                ->label('')
-                ->tooltip('Editar'),
+                    ->label('')
+                    ->tooltip('Editar'),
                 Tables\Actions\DeleteAction::make()
-                ->tooltip('Eliminar')
-                ->label(''),
+                    ->tooltip('Eliminar')
+                    ->label(''),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -108,7 +147,7 @@ class InstanciaPasoFlujoResource extends Resource
         return [
             'index' => Pages\ListInstanciaPasoFlujos::route('/'),
             'create' => Pages\CreateInstanciaPasoFlujo::route('/create'),
-            'view' => Pages\ViewInstanciaPasoFlujo::route('/{record}'),
+            // 'view' => Pages\ViewInstanciaPasoFlujo::route('/{record}'),
             'edit' => Pages\EditInstanciaPasoFlujo::route('/{record}/edit'),
         ];
     }

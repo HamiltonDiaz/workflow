@@ -32,14 +32,14 @@ class EditPasoFlujo extends EditRecord
         $model= new PasoFlujo();       
 
         //Valida que el primer paso no sea final
-        if($this->data['es_final']!=0 && $this->data['orden'] ==1 ){
-            Notification::make()
-                ->title('Error de validación')
-                ->body('El primer paso no puede ser final.')
-                ->danger()
-                ->send();                
-            $this->halt();
-        }
+        // if($this->data['es_final']!=0 && $this->data['orden'] ==1 ){
+        //     Notification::make()
+        //         ->title('Error de validación')
+        //         ->body('El primer paso no puede ser final.')
+        //         ->danger()
+        //         ->send();                
+        //     $this->halt();
+        // }
     
         //Valida si hay un paso superior
         $maximo= $model::where('flujo_trabajo_id', $this->data['flujo_trabajo_id'])
