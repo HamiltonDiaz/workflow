@@ -15,8 +15,6 @@ return new class extends Migration
             $table->id();
             $table->string('nombre');
             $table->text('descripcion',400)->nullable();
-            $table->integer('orden');
-            $table->integer('es_final')->default(0);
             $table->unsignedBigInteger('flujo_trabajo_id');            
             $table->softDeletes();
             $table->timestamps();            

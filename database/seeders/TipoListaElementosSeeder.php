@@ -28,7 +28,7 @@ class TipoListaElementosSeeder extends Seeder
         
                 TipoListaElemento::create([
                     'id' => 3,
-                    'nombre' => 'estados flujos',
+                    'nombre' => 'estados pasos flujos',
                     'descripcion' => 'Se utiliza para definir los estados de las instancias de pasos del flujo',
                 ]);
     }

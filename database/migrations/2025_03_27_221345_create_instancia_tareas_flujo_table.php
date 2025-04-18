@@ -23,8 +23,8 @@ return new class extends Migration
             $table->text('ruta_archivo',800)->nullable();
             $table->unsignedBigInteger('instancia_paso_flujo_id');
             $table->unsignedBigInteger('estado');
-            $table->unsignedBigInteger('asignado_a');
-            $table->unsignedBigInteger('asignado_por');      
+            $table->unsignedBigInteger('asignado_a')->nullable();
+            $table->unsignedBigInteger('asignado_por')->nullable();
             $table->softDeletes();
             $table->timestamps();
             $table->foreign('instancia_paso_flujo_id')->references('id')->on('instancia_paso_flujo');

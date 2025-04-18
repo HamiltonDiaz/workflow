@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use App\Traits\BuscarOrdenTrait;
 use App\Traits\SoftDeleteManagementTrait;
+use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -13,7 +15,7 @@ use Ramsey\Uuid\Type\Integer;
 class PasoFlujo extends Model
 {
     use  HasFactory, SoftDeletes;
-    use SoftDeleteManagementTrait; //Metodo propio
+    use SoftDeleteManagementTrait, BuscarOrdenTrait; //Metodo propio
     protected $table = 'pasos_flujo';
 
 
@@ -24,6 +26,24 @@ class PasoFlujo extends Model
         'es_final',
         'flujo_trabajo_id',
     ];
+
+    
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function ($register) {
+            // Verifica si tiene registros en otras tablas relacionadas
+            if ($register->tareasFlujo()->exists()) {
+                Notification::make()
+                    ->title('Error al eliminar')
+                    ->danger()
+                    ->body('No se puede eliminar porque tiene registros asociados.')
+                    ->send();
+                return false; // Cancela la eliminación
+            }
+        });
+    }
 
     // Relaciones
     public function flujoTrabajo():BelongsTo
@@ -36,38 +56,4 @@ class PasoFlujo extends Model
         return $this->hasMany(TareaFlujo::class, 'pasos_flujo_id');
     }
 
-    
-    public static function buscarOrden($flujoId, $ordenActual = null)
-    {        
-        $resultado = self::where('flujo_trabajo_id', $flujoId)
-                    ->where('deleted_at', null)
-                    ->count();
-        
-        // Si no hay registros, retornar array con el número 1
-        if ($resultado == 0) {
-            return [1];
-        }       
-
-        $maximo = self::where('flujo_trabajo_id', $flujoId)
-                        ->where('deleted_at', null)
-                        ->max('orden');
-        
-        // Obtener todos los órdenes existentes excepto el actual (si existe)
-        $query = self::where('flujo_trabajo_id', $flujoId)
-                ->where('deleted_at', null);
-        if ($ordenActual) {
-            $query->where('orden', '!=', $ordenActual);
-        }
-        $ordenesExistentes = $query->pluck('orden')->toArray();
-
-        // Crear array con números disponibles
-        $numerosDisponibles = [];
-        for ($i = 1; $i <= $maximo + 1; $i++) {
-            if (!in_array($i, $ordenesExistentes) || $i == $ordenActual) {
-                $numerosDisponibles[] = $i;
-            }
-        }
-
-        return empty($numerosDisponibles) ? [$maximo + 1] : $numerosDisponibles;
-    }
 }

@@ -44,16 +44,16 @@ trait FilamentDuplicateCheckTrait
         //nombreRegistro=> este campo es para mostar en la tarjeta emergente y para 
         //que sea modificado en la bbdd cuando se va reutilizar el nombre en una edición.
         $existingRegister = $modelo->deletedRegister($data, $fields, $nombreRegistro);
-        if ($existingRegister) {
-            if ($this instanceof \Filament\Resources\Pages\CreateRecord) {
-                Notification::make()
-                    ->title('Creado')
-                    ->success()
-                    ->send();
-                $this->redirect($this->getResource()::getUrl('edit', ['record' => $existingRegister->id]));
-                $this->halt();
-            }
-        }
+        // if ($existingRegister) {
+        //     if ($this instanceof \Filament\Resources\Pages\CreateRecord) {
+        //         Notification::make()
+        //             ->title('Creado')
+        //             ->success()
+        //             ->send();
+        //         $this->redirect($this->getResource()::getUrl('edit', ['record' => $existingRegister->id]));
+        //         $this->halt();
+        //     }
+        // }
     }
 
     /**

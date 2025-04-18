@@ -107,7 +107,7 @@ class TareaFlujoResource extends Resource
                                 }
                                 
                                 $ordenActual = $record ? $record->orden : null;
-                                $ordenes = TareaFlujo::buscarOrden($pasoId, $ordenActual);
+                                $ordenes = TareaFlujo::buscarOrden($pasoId, $ordenActual,'pasos_flujo_id');
                                 return array_combine($ordenes, $ordenes);
                             })
                             ->live()

@@ -35,14 +35,14 @@ class EditTareaFlujo extends EditRecord
         $model= new TareaFlujo();       
 
         //Valida que el primer paso no sea final
-        if($this->data['es_final']!=0 && $this->data['orden'] ==1 ){
-            Notification::make()
-                ->title('Error de validación')
-                ->body('La primer tarea no puede ser final.')
-                ->danger()
-                ->send();                
-            $this->halt();
-        }
+        // if($this->data['es_final']!=0 && $this->data['orden'] ==1 ){
+        //     Notification::make()
+        //         ->title('Error de validación')
+        //         ->body('La primer tarea no puede ser final.')
+        //         ->danger()
+        //         ->send();                
+        //     $this->halt();
+        // }
     
         //Valida si hay un paso superior
         $maximo= $model::where('pasos_flujo_id', $this->data['pasos_flujo_id'])

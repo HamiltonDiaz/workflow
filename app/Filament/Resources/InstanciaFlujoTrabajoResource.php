@@ -19,7 +19,7 @@ class InstanciaFlujoTrabajoResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-bars-arrow-up';
     protected static ?string $navigationLabel = 'Flujos';
-    protected static ?string $modelLabel = 'Flujos';
+    protected static ?string $modelLabel = 'Instancia flujos';
     protected static ?string $navigationGroup = 'Instancias flujos';
     protected static ?int $navigationSort = 1;
 
@@ -27,21 +27,33 @@ class InstanciaFlujoTrabajoResource extends Resource
     {
         return $form
             ->schema([
+                Forms\Components\Select::make('flujo_trabajo_id')
+                    ->relationship('flujoTrabajo', 'nombre')
+                    ->live()
+                    ->required()
+                    ->disabled(fn ($context) => $context === 'edit')
+                    ->dehydrated(true)
+                    ->afterStateUpdated(function ($state, Forms\Set $set) {
+                        if ($state) {//$state: Contiene el valor seleccionado (ID del flujo de trabajo)
+                            $flujoTrabajo = \App\Models\FlujoTrabajo::find($state);
+                            if ($flujoTrabajo) {
+                                $set('nombre', $flujoTrabajo->nombre);
+                                $set('descripcion', $flujoTrabajo->descripcion);
+                            }
+                        } else {
+                            // Si no hay valor seleccionado (deselección)
+                            // Limpia los campos
+                            $set('nombre', '');
+                            $set('descripcion', '');
+                        }
+                    }),
                 Forms\Components\TextInput::make('nombre')
                     ->required()
+                    ->live()
                     ->maxLength(255),
                 Forms\Components\Textarea::make('descripcion')
-                    ->columnSpanFull(),
-                Forms\Components\TextInput::make('orden')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('es_final')
-                    ->required()
-                    ->numeric()
-                    ->default(0),
-                Forms\Components\Select::make('flujo_trabajo_id')
-                    ->relationship('flujoTrabajo', 'id')
-                    ->required(),
+                    ->live()
+                    ->columnSpanFull(),                
             ]);
     }
 
@@ -49,17 +61,16 @@ class InstanciaFlujoTrabajoResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('flujoTrabajo.nombre')
+                    ->sortable()
+                    ->searchable(),                    
                 Tables\Columns\TextColumn::make('nombre')
+                    ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('orden')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('es_final')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('flujoTrabajo.id')
-                    ->numeric()
-                    ->sortable(),
+                Tables\Columns\TextColumn::make('descripcion')
+                    ->sortable()
+                    ->limit(40)
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -102,7 +113,7 @@ class InstanciaFlujoTrabajoResource extends Resource
         return [
             'index' => Pages\ListInstanciaFlujoTrabajos::route('/'),
             'create' => Pages\CreateInstanciaFlujoTrabajo::route('/create'),
-            'view' => Pages\ViewInstanciaFlujoTrabajo::route('/{record}'),
+            // 'view' => Pages\ViewInstanciaFlujoTrabajo::route('/{record}'),
             'edit' => Pages\EditInstanciaFlujoTrabajo::route('/{record}/edit'),
         ];
     }

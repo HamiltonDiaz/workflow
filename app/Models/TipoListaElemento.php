@@ -26,7 +26,7 @@ class TipoListaElemento extends Model
         parent::boot();
 
         static::deleting(function ($register) {
-            // Verifica si el usuario tiene registros en otras tablas relacionadas
+            // Verifica si tiene registros en otras tablas relacionadas
             if ($register->listaElementos()->exists()) {
                 Notification::make()
                     ->title('Error al eliminar')

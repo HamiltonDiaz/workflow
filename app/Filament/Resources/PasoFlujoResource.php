@@ -45,7 +45,7 @@ class PasoFlujoResource extends Resource
                             return [1];
                         }
                         $ordenActual = $record ? $record->orden : null;
-                        $ordenes = PasoFlujo::buscarOrden($flujoId, $ordenActual);
+                        $ordenes = PasoFlujo::buscarOrden($flujoId, $ordenActual, 'flujo_trabajo_id');
                         return array_combine($ordenes, $ordenes);
                     })
                     ->live()
@@ -62,8 +62,8 @@ class PasoFlujoResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('flujoTrabajo.nombre')
-                    ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('nombre')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('orden')

@@ -40,7 +40,8 @@ trait SoftDeleteManagementTrait
                         $existingRegister->save();
                     }
                 } else {
-                    $existingRegister->restore();
+                    $existingRegister[$nombreCampoEdicion] = $existingRegister[$nombreCampoEdicion] . ' (reutilizado un nuevo registro' . ' el ' . now() . ')';
+                    $existingRegister->save();                    
                 }
                 return $existingRegister;
             }
