@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('instancia_flujo_trabajo', function (Blueprint $table) {
             $table->id();
             $table->string('nombre');
+            $table->string('consecutivo')->unique();
             $table->text('descripcion',400)->nullable();
             $table->unsignedBigInteger('flujo_trabajo_id');            
             $table->softDeletes();

@@ -8,6 +8,7 @@ enum GlobalEnums
     case ESTADO_TAREAS;
     case ESTADO_INSTANCIAS_PASOS;
     case ACTIVO_INSTANCIA_PASO;
+    case PENDIENTE_INSTANCIA_TAREA;
     case PAUSA_INSTANCIA_PASO;
     case COMPLETO_INSTANCIA_PASO;
 
@@ -20,6 +21,7 @@ enum GlobalEnums
             self::ACTIVO_INSTANCIA_PASO=>10,
             self::COMPLETO_INSTANCIA_PASO=>11,
             self::PAUSA_INSTANCIA_PASO=>12,
+            self::PENDIENTE_INSTANCIA_TAREA=>1,
         };
     }
 }

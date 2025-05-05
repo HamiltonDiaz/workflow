@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\GlobalEnums;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -34,9 +35,10 @@ class InstanciaTareaFlujo extends Model
         return $this->belongsTo(InstanciaPasoFlujo::class,'instancia_paso_flujo_id');
     }
 
-    public function estado():BelongsTo
+    public function estados():BelongsTo
     {
-        return $this->belongsTo(ListaElemento::class, 'estado');
+        return $this->belongsTo(ListaElemento::class, 'estado')
+        ->where('tipo_lista_elemento_id', GlobalEnums::ESTADO_TAREAS->value());
     }
 
     public function asignadoA():BelongsTo

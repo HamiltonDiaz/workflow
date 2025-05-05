@@ -73,7 +73,13 @@ class InstanciaPasoFlujoResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('instanciaFlujoTrabajo.consecutivo')
+                ->label('Id flujo')
+                ->sortable()
+                ->searchable()
+                ->sortable(),
                 Tables\Columns\TextColumn::make('instanciaFlujoTrabajo.nombre')
+                    ->label('Nombre flujo')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('nombre')
@@ -105,14 +111,10 @@ class InstanciaPasoFlujoResource extends Resource
                     ->trueIcon('heroicon-o-check-circle')
                     ->falseIcon('heroicon-o-x-circle')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('consecutivo')
+                    ->searchable()
+                    ->sortable(),
+          
             ])
             ->filters([
                 //

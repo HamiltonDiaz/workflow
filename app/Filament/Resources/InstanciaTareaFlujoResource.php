@@ -64,43 +64,38 @@ class InstanciaTareaFlujoResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('instanciaPasoFlujo.instanciaFlujoTrabajo.consecutivo')
+                    ->label('Id Flujo')
+                    ->sortable()
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('instanciaPasoFlujo.instanciaFlujoTrabajo.nombre')
+                    ->label('Nombre flujo')
+                    ->limit(20)
+                    ->sortable()
+                    ->searchable()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('titulo')
                     ->searchable(),
+                Tables\Columns\IconColumn::make('es_final')
+                    ->label('Es Final')
+                    ->boolean()
+                    ->trueIcon('heroicon-o-check-circle')
+                    ->falseIcon('heroicon-o-x-circle')
+                    ->alignment('center')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('estados.nombre')
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('asignado_a')
+                    ->label('Responsable')
+                    ->numeric()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('fecha_inicio')
                     ->date()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('fecha_vencimiento')
                     ->date()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('orden')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('es_final')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('es_editable')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('instanciaPasoFlujo.id')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('estado')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('asignado_a')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('asignado_por')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->sortable(),                    
             ])
             ->filters([
                 //
@@ -120,7 +115,10 @@ class InstanciaTareaFlujoResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->recordUrl(null)//Esto es para evitar que se genere el link editar
+            ->recordAction(null);//Esto suprime las acciones de la tabla al dar clic en la fila
+
     }
 
     public static function getRelations(): array
@@ -135,7 +133,7 @@ class InstanciaTareaFlujoResource extends Resource
         return [
             'index' => Pages\ListInstanciaTareaFlujos::route('/'),
             'create' => Pages\CreateInstanciaTareaFlujo::route('/create'),
-            'view' => Pages\ViewInstanciaTareaFlujo::route('/{record}'),
+            // 'view' => Pages\ViewInstanciaTareaFlujo::route('/{record}'),
             'edit' => Pages\EditInstanciaTareaFlujo::route('/{record}/edit'),
         ];
     }

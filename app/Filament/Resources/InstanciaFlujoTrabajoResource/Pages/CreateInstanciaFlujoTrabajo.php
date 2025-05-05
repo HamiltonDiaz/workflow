@@ -6,6 +6,7 @@ use App\Enums\GlobalEnums;
 use App\Filament\Resources\InstanciaFlujoTrabajoResource;
 use App\Filament\Traits\FilamentDuplicateCheckTrait;
 use App\Models\FlujoTrabajo;
+use App\Models\HistoricoTarea;
 use App\Models\InstanciaFlujoTrabajo;
 use App\Models\InstanciaPasoFlujo;
 use App\Models\InstanciaTareaFlujo;
@@ -13,6 +14,7 @@ use App\Models\PasoFlujo;
 use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Filament\Notifications\Notification;
 
 class CreateInstanciaFlujoTrabajo extends CreateRecord
@@ -71,7 +73,7 @@ class CreateInstanciaFlujoTrabajo extends CreateRecord
                                 'orden' => $tarea->orden,
                                 'es_final' => $tarea->es_final,
                                 'es_editable' => $tarea->es_editable,
-                                'estado' => GlobalEnums::ACTIVO_INSTANCIA_PASO->value(),
+                                'estado' => GlobalEnums::PENDIENTE_INSTANCIA_TAREA->value(),
                             ];
                         }
                         return [];
@@ -122,9 +124,15 @@ class CreateInstanciaFlujoTrabajo extends CreateRecord
 
                 // Crear las instancias de tareas
                 foreach ($pasoData['tareas'] as $tareaData) {
-                    InstanciaTareaFlujo::create([
+                    $instanciaTarea = InstanciaTareaFlujo::create([
                         ...$tareaData,
                         'instancia_paso_flujo_id' => $instanciaPaso->id,
+                    ]);
+
+                    HistoricoTarea::create([
+                        'instancia_tareas_flujo_id' => $instanciaTarea->id,
+                        'descripcion' => 'Creación mediante proceso automático',
+                        'user_id' => Auth::user()->id,
                     ]);
                 }
             }

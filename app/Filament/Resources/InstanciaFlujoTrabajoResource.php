@@ -63,7 +63,10 @@ class InstanciaFlujoTrabajoResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('flujoTrabajo.nombre')
                     ->sortable()
-                    ->searchable(),                    
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('consecutivo')
+                    ->sortable()
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('nombre')
                     ->sortable()
                     ->searchable(),
