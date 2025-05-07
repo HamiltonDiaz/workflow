@@ -101,7 +101,9 @@ class InstanciaFlujoTrabajoResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ]);
+            ]) 
+            ->recordUrl(null)//Esto es para evitar que se genere el link editar
+            ->recordAction(null);//Esto suprime las acciones de la tabla al dar clic en la fila
     }
 
     public static function getRelations(): array

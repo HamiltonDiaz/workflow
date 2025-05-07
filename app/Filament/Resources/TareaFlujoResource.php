@@ -91,7 +91,7 @@ class TareaFlujoResource extends Resource
                         Forms\Components\TextInput::make('titulo')
                             ->required()
                             ->maxLength(45)
-                            ->columnSpan(['xs' => 12,'md' => 12, 'xl' => 6]),
+                            ->columnSpan(['sm' => 12,'md' => 12, 'xl' => 6]),
                         Forms\Components\Select::make('orden')
                             ->placeholder('Seleccione')
                             ->required()
@@ -111,13 +111,13 @@ class TareaFlujoResource extends Resource
                                 return array_combine($ordenes, $ordenes);
                             })
                             ->live()
-                            ->columnSpan(['xs' => 12,'md' => 12, 'xl' => 2]),
+                            ->columnSpan(['sm' => 12,'md' => 12, 'xl' => 2]),
                         Forms\Components\Toggle::make('es_final')                            
                             ->default(0)
-                            ->columnSpan(['xs' => 6,'md' => 6, 'xl' => 2]),
+                            ->columnSpan(['sm' => 6,'md' => 6, 'xl' => 2]),
                         Forms\Components\Toggle::make('es_editable')
                             ->default(0)
-                            ->columnSpan(['xs' => 6,'xs' => 6, 'xl' => 2]),
+                            ->columnSpan(['sm' => 6,'sm' => 6, 'xl' => 2]),
                     ]),
 
                 Forms\Components\Textarea::make('descripcion')

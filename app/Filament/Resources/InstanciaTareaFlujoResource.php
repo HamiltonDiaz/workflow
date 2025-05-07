@@ -27,36 +27,63 @@ class InstanciaTareaFlujoResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('titulo')
-                    ->required()
-                    ->maxLength(45),
+                Forms\Components\Grid::make()
+                    ->schema([
+                        Forms\Components\Select::make('instancia_paso_flujo_id')
+                            ->relationship('instanciaPasoFlujo', 'nombre')
+                            ->required()
+                            ->columnSpan(['sm' => 12, 'md' => 12, 'lg' => 4]),
+                        Forms\Components\TextInput::make('titulo')
+                            ->required()
+                            ->maxLength(45)
+                            ->columnSpan(['sm' => 12, 'md' => 12, 'lg' => 8]),
+                    ])
+                    ->columns(12),
                 Forms\Components\Textarea::make('descripcion')
                     ->columnSpanFull(),
-                Forms\Components\DatePicker::make('fecha_inicio'),
-                Forms\Components\DatePicker::make('fecha_vencimiento'),
-                Forms\Components\TextInput::make('orden')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('es_final')
-                    ->required()
-                    ->numeric()
-                    ->default(0),
-                Forms\Components\TextInput::make('es_editable')
-                    ->required()
-                    ->numeric()
-                    ->default(0),
-                Forms\Components\Select::make('instancia_paso_flujo_id')
-                    ->relationship('instanciaPasoFlujo', 'id')
-                    ->required(),
-                Forms\Components\TextInput::make('estado')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('asignado_a')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('asignado_por')
-                    ->required()
-                    ->numeric(),
+                Forms\Components\Grid::make()
+                    ->schema([
+                        Forms\Components\DatePicker::make('fecha_inicio')
+                            ->columnSpan(['sm' => 12, 'md' => 6, 'lg' => 3]),
+                        Forms\Components\DatePicker::make('fecha_vencimiento')
+                            ->columnSpan(['sm' => 12, 'md' => 6, 'lg' => 3]),
+                        Forms\Components\TextInput::make('orden')
+                            ->required()
+                            ->numeric()
+                            ->columnSpan(['sm' => 12, 'md' => 4, 'lg' => 2]),
+                        Forms\Components\Toggle::make('es_final')
+                            ->inline(false)
+                            ->required()
+                            ->default(0)
+                            ->columnSpan(['sm' => 6, 'md' => 4, 'lg' => 2]),
+                        Forms\Components\Toggle::make('es_editable')
+                            ->inline(false)
+                            ->required()
+                            ->default(0)
+                            ->columnSpan(['sm' => 6, 'md' => 4, 'lg' => 2]),
+                    ])
+                    ->columns(12),
+                Forms\Components\Grid::make()
+                    ->schema([
+                        Forms\Components\Select::make('estado')
+                            ->placeholder('Seleccione')
+                            ->relationship('estados', 'nombre')
+                            ->required()
+                            ->columnSpan(['sm' => 6, 'md' => 4, 'lg' => 2]),
+                        Forms\Components\Select::make('asignado_a')
+                            ->relationship('asignadoA', 'name')
+                            ->searchable()
+                            ->preload()
+                            ->required()
+                            ->columnSpan(['sm' => 6, 'md' => 4, 'lg' => 5]),
+                        Forms\Components\Select::make('asignado_por')
+                            ->relationship('asignadoPor', 'name')
+                            ->searchable()
+                            ->preload()
+                            ->required()
+                            ->columnSpan(['sm' => 6, 'md' => 4, 'lg' => 5]),
+                    ])
+                    ->columns(12),
             ]);
     }
 
@@ -95,30 +122,27 @@ class InstanciaTareaFlujoResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('fecha_vencimiento')
                     ->date()
-                    ->sortable(),                    
+                    ->sortable(),
             ])
             ->filters([
                 //
             ])
             ->actions([
                 Tables\Actions\ViewAction::make()
-                ->label('')
-                ->tooltip('Ver'),
+                    ->label('')
+                    ->tooltip('Ver'),
                 Tables\Actions\EditAction::make()
-                ->label('')
-                ->tooltip('Editar'),
+                    ->label('')
+                    ->tooltip('Editar'),
                 Tables\Actions\DeleteAction::make()
-                ->tooltip('Eliminar')
-                ->label(''),
+                    ->tooltip('Eliminar')
+                    ->label(''),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ])
-            ->recordUrl(null)//Esto es para evitar que se genere el link editar
-            ->recordAction(null);//Esto suprime las acciones de la tabla al dar clic en la fila
-
+            ]);
     }
 
     public static function getRelations(): array
