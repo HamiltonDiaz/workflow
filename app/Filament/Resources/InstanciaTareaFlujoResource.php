@@ -104,21 +104,11 @@ class InstanciaTareaFlujoResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('titulo')
                     ->searchable(),
-                Tables\Columns\IconColumn::make('es_final')
-                    ->label('Es Final')
-                    ->boolean()
-                    ->trueIcon('heroicon-o-check-circle')
-                    ->falseIcon('heroicon-o-x-circle')
-                    ->alignment('center')
-                    ->sortable(),
                 Tables\Columns\TextColumn::make('estados.nombre')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('asignado_a')
+                Tables\Columns\TextColumn::make('asignadoA.name')
                     ->label('Responsable')
                     ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('fecha_inicio')
-                    ->date()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('fecha_vencimiento')
                     ->date()
@@ -148,7 +138,8 @@ class InstanciaTareaFlujoResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\ComentariosRelationManager::class,
+            RelationManagers\HistorialRelationManager::class,
         ];
     }
 

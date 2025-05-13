@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\GlobalEnums;
 use App\Filament\Resources\PasoFlujoResource\Pages;
 use App\Filament\Resources\PasoFlujoResource\RelationManagers;
 use App\Models\PasoFlujo;
@@ -60,6 +61,9 @@ class PasoFlujoResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(function (Builder $query) {
+                return $query->where('id', '!=', GlobalEnums::PASO_GENERAL->value());
+            })
             ->columns([
                 Tables\Columns\TextColumn::make('flujoTrabajo.nombre')
                     ->sortable()

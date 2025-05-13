@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\GlobalEnums;
 use App\Filament\Resources\TareaFlujoResource\Pages;
 use App\Filament\Resources\TareaFlujoResource\RelationManagers;
 use App\Models\FlujoTrabajo;
@@ -128,6 +129,9 @@ class TareaFlujoResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(function (Builder $query) {
+                return $query->where('id', '!=', GlobalEnums::TAREA_GENERAL->value());
+            })
             ->columns([
                 Tables\Columns\TextColumn::make('pasoFlujo.nombre')
                     ->numeric()

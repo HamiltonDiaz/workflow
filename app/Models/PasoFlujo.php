@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\GlobalEnums;
 use App\Traits\BuscarOrdenTrait;
 use App\Traits\SoftDeleteManagementTrait;
 use Filament\Notifications\Notification;
@@ -48,7 +49,8 @@ class PasoFlujo extends Model
     // Relaciones
     public function flujoTrabajo():BelongsTo
     {
-        return $this->belongsTo(FlujoTrabajo::class, 'flujo_trabajo_id');
+        return $this->belongsTo(FlujoTrabajo::class, 'flujo_trabajo_id')
+        ->where('id','!=' , GlobalEnums::FLUJO_GENERAL->value());
     }
     
     public function tareasFlujo():HasMany

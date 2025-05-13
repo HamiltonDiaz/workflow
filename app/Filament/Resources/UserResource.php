@@ -45,8 +45,7 @@ class UserResource extends Resource
                     ->unique(ignoreRecord: true)//TODO: Esto consulta en la base de datos antes de crear
                     ->validationMessages([
                         'unique' => 'Ya existe un registro con este correo.'
-                    ]),                    
-                Forms\Components\DateTimePicker::make('email_verified_at'),
+                    ]),
                 Forms\Components\TextInput::make('password')
                     ->password()
                     ->required()
@@ -77,10 +76,7 @@ class UserResource extends Resource
                     ->formatStateUsing(fn ($state) => mb_strtoupper($state))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('email_verified_at')
-                    ->dateTime()
-                    ->sortable(),
+                    ->searchable(),     
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

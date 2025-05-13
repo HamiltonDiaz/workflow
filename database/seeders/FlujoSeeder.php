@@ -14,18 +14,20 @@ class FlujoSeeder extends Seeder
      */
     public function run(): void
     {
-        $flujo = new FlujoTrabajo();        
-        $flujo->id=1;
-        $flujo->nombre = 'Registro pagos clientes';
-        $flujo->descripcion = 'Este es un flujo de trabajo para registrar los pagos que realizan los clientes en las zonas rurales y que deben ser contabilizados para tener actualizada la cartera de clientes.';
-        $flujo->save();
 
-        // $flujo2 = new FlujoTrabajo();
-        // $flujo->id(2);
-        // $flujo2->nombre = 'Flujo Secundario';
-        // $flujo2->descripcion = 'Flujo de trabajo secundario del sistema';
-        // $flujo2->activo = true;
-        // $flujo2->save();
+        $flujo1 = new FlujoTrabajo();        
+        $flujo1->id=1;
+        $flujo1->nombre = 'General';
+        $flujo1->descripcion = 'Flujo para tareas generales.';
+        $flujo1->save();
+
+        $flujo2 = new FlujoTrabajo();        
+        $flujo2->id=2;
+        $flujo2->nombre = 'Registro pagos clientes';
+        $flujo2->descripcion = 'Este es un flujo de trabajo para registrar los pagos que realizan los clientes en las zonas rurales y que deben ser contabilizados para tener actualizada la cartera de clientes.';
+        $flujo2->save();
+
+        
 
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\GlobalEnums;
 use App\Filament\Resources\FlujoTrabajoResource\Pages;
 use App\Filament\Resources\FlujoTrabajoResource\RelationManagers;
 use App\Models\FlujoTrabajo;
@@ -38,6 +39,9 @@ class FlujoTrabajoResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(function (Builder $query) {
+                return $query->where('id', '!=', GlobalEnums::FLUJO_GENERAL->value());
+            })
             ->columns([
                 Tables\Columns\TextColumn::make('nombre')
                     ->searchable(),
