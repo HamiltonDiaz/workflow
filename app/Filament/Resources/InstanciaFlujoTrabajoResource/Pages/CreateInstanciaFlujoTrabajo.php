@@ -63,7 +63,7 @@ class CreateInstanciaFlujoTrabajo extends CreateRecord
                         'descripcion' => $pasoOriginal->descripcion,
                         'orden' => $pasoOriginal->orden,
                         'es_final' => $pasoOriginal->es_final,
-                        'estado' => 1
+                        'estado' => GlobalEnums::ACTIVO_INSTANCIA_PASO->value()
                     ],
                     'tareas' => $pasoOriginal->tareasFlujo->map(function ($tarea) {
                         if($tarea->deleted_at==null){

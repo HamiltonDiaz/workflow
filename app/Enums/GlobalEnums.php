@@ -12,8 +12,8 @@ enum GlobalEnums
     case PAUSA_INSTANCIA_PASO;
     case COMPLETO_INSTANCIA_PASO;
     case FLUJO_GENERAL;
-    case PASO_GENERAL;
-    case TAREA_GENERAL;
+    case INSTANCIA_FLUJO_GENERAL;
+    case INSTANCIA_PASO_GENERAL;
 
     public function value(): string|int
     {
@@ -26,8 +26,8 @@ enum GlobalEnums
             self::PAUSA_INSTANCIA_PASO=>12,
             self::PENDIENTE_INSTANCIA_TAREA=>1,
             self::FLUJO_GENERAL=> 1,
-            self::PASO_GENERAL=> 1,
-            self::TAREA_GENERAL=> 1,
+            self::INSTANCIA_FLUJO_GENERAL=> 1,
+            self::INSTANCIA_PASO_GENERAL=> 1,
         };
     }
 }

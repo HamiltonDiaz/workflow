@@ -47,7 +47,8 @@ class InstanciaPasoFlujo extends Model
     // Relaciones
     public function instanciaFlujoTrabajo(): BelongsTo
     {
-        return $this->belongsTo(InstanciaFlujoTrabajo::class, 'instancia_flujo_trabajo_id');
+        return $this->belongsTo(InstanciaFlujoTrabajo::class, 'instancia_flujo_trabajo_id')
+        ->where('id','!=' , GlobalEnums::INSTANCIA_FLUJO_GENERAL->value());;
     }
 
     public function listaElementos(): BelongsTo

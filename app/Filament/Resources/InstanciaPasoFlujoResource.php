@@ -72,6 +72,9 @@ class InstanciaPasoFlujoResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(function (Builder $query) {
+                return $query->where('id', '!=', GlobalEnums::INSTANCIA_PASO_GENERAL->value());
+            })
             ->columns([
                 Tables\Columns\TextColumn::make('instanciaFlujoTrabajo.consecutivo')
                 ->label('Id flujo')

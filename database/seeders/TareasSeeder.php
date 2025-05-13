@@ -14,15 +14,15 @@ class TareasSeeder extends Seeder
     public function run(): void
     {
 
-        $tareaGeneral = new TareaFlujo();
-        $tareaGeneral->id=1;
-        $tareaGeneral->titulo="Tarea general";
-        $tareaGeneral->descripcion="Esta es una tarea general que se puede utilizar en cualquier flujo de trabajo.";
-        $tareaGeneral->orden=1;
-        $tareaGeneral->es_final=1;
-        $tareaGeneral->es_editable=1;
-        $tareaGeneral->pasos_flujo_id=1;
-        $tareaGeneral->save();
+        // $tareaGeneral = new TareaFlujo();
+        // $tareaGeneral->id=1;
+        // $tareaGeneral->titulo="Tarea general";
+        // $tareaGeneral->descripcion="Esta es una tarea general que se puede utilizar en cualquier flujo de trabajo.";
+        // $tareaGeneral->orden=1;
+        // $tareaGeneral->es_final=1;
+        // $tareaGeneral->es_editable=1;
+        // $tareaGeneral->pasos_flujo_id=1;
+        // $tareaGeneral->save();
 
 
 

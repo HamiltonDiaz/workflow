@@ -18,7 +18,9 @@ class DatabaseSeeder extends Seeder
             UsersTableSeeder::class,
             FlujoSeeder::class,
             PasosSeeder::class,
-            TareasSeeder::class
+            TareasSeeder::class,
+            InstanciaFlujoSeeder::class,
+            InstanciaPasoSeeder::class,
         ]);
     }
 }

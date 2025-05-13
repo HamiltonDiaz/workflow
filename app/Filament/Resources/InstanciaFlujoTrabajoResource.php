@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\GlobalEnums;
 use App\Filament\Resources\InstanciaFlujoTrabajoResource\Pages;
 use App\Filament\Resources\InstanciaFlujoTrabajoResource\RelationManagers;
 use App\Models\InstanciaFlujoTrabajo;
@@ -60,6 +61,9 @@ class InstanciaFlujoTrabajoResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(function (Builder $query) {
+                return $query->where('id', '!=', GlobalEnums::INSTANCIA_FLUJO_GENERAL->value());
+            })
             ->columns([
                 Tables\Columns\TextColumn::make('flujoTrabajo.nombre')
                     ->sortable()
