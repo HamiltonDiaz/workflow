@@ -25,7 +25,7 @@ enum PermissionActionEnum: string
             self::DELETE->value => 'Eliminar',
             self::EXPORT->value => 'Exportar',
             self::IMPORT->value => 'Importar',
-            self::PUBLISH->value => 'Publicar',            
+            self::PUBLISH->value => 'Publicar',
         ];
     }
     

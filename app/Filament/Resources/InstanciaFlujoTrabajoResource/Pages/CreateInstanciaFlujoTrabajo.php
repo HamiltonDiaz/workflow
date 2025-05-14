@@ -84,7 +84,6 @@ class CreateInstanciaFlujoTrabajo extends CreateRecord
 
         // Si se encontraron pasos sin tareas, mostrar notificación y detener
         if (!empty($pasosSinTareas)) {
-            DB::rollBack();
             Notification::make()
                 ->warning()
                 ->title('Error en la creación')

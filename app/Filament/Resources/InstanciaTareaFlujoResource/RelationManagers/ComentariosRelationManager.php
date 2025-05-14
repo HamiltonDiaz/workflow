@@ -63,6 +63,17 @@ class ComentariosRelationManager extends RelationManager
                 Tables\Actions\CreateAction::make()
                     ->icon('heroicon-o-chat-bubble-left-ellipsis')
             ])
+            ->actions([
+                Tables\Actions\ViewAction::make()
+                    ->label('')
+                    ->tooltip('Ver'),
+                Tables\Actions\EditAction::make()
+                    ->label('')
+                    ->tooltip('Editar'),
+                Tables\Actions\DeleteAction::make()
+                    ->tooltip('Eliminar')
+                    ->label(''),
+            ])
           ;
     }
 }

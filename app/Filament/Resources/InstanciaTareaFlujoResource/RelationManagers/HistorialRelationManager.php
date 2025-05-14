@@ -22,8 +22,8 @@ class HistorialRelationManager extends RelationManager
             ->columns([
                 Tables\Columns\TextColumn::make('descripcion')
                     ->label('Descripción')
-                    ->searchable()
-                    ->wrap(),
+                    ->limit(80)
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('user.name')
                     ->label('Usuario')
                     ->searchable(),
@@ -32,6 +32,29 @@ class HistorialRelationManager extends RelationManager
                     ->dateTime('d/m/Y H:i:s')
                     ->sortable(),
             ])
-            ->defaultSort('created_at', 'desc');
+            ->defaultSort('created_at', 'desc')
+            ->actions([
+                Tables\Actions\ViewAction::make()
+                    ->modalHeading('Detalle cambio')
+                    ->form([
+                        Forms\Components\Textarea::make('descripcion')
+                            ->label('')
+                            ->formatStateUsing(function ($record) {
+                                return $record->descripcion;
+                            })
+                            ->helperText(fn ($record): string => $record->user->name . ' - ' . $record->created_at->format('d/m/Y H:i'))
+                            ->columnSpanFull()
+                            ->disabled()
+                            ->rows(5)
+                            ->autosize(),
+                    ])
+            ])
+            ->reorderable(false)
+            ->poll();
+    }
+
+    protected function refreshTable(): void
+    {
+        $this->resetTable();
     }
 }

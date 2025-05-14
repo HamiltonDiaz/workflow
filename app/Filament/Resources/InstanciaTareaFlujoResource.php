@@ -15,6 +15,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 
 class InstanciaTareaFlujoResource extends Resource
 {
@@ -41,6 +42,8 @@ class InstanciaTareaFlujoResource extends Resource
                             ->columnSpan(['sm' => 12, 'md' => 12, 'lg' => 4]),
                         Forms\Components\TextInput::make('titulo')
                             ->required()
+                            ->disabled(fn ($record) => $record && !$record->es_editable)
+                            ->dehydrated(true)
                             ->maxLength(45)
                             ->columnSpan(['sm' => 12, 'md' => 12, 'lg' => 8]),
                     ])
@@ -70,8 +73,8 @@ class InstanciaTareaFlujoResource extends Resource
                     Forms\Components\TextInput::make('orden')
                         ->required()
                         ->default(1)
-                        ->dehydrated(true)
                         ->disabled()
+                        ->dehydrated(true)
                         ->numeric()
                         ->columnSpan(['sm' => 12, 'md' => 4, 'lg' => 2]),
                     Forms\Components\Toggle::make('es_final')
@@ -85,8 +88,8 @@ class InstanciaTareaFlujoResource extends Resource
                         ->inline(false)
                         ->required()
                         ->default(1)
-                        ->dehydrated(true)
                         ->disabled()
+                        ->dehydrated(true)
                         ->columnSpan(['sm' => 6, 'md' => 4, 'lg' => 2]),
                     ])
                     ->columns(12),
@@ -94,8 +97,7 @@ class InstanciaTareaFlujoResource extends Resource
                     ->schema([
                         Forms\Components\Select::make('estado')
                             ->placeholder('Seleccione')
-                            ->relationship('estados', 'nombre')
-                            
+                            ->relationship('estados', 'nombre')                            
                             ->default(GlobalEnums::PENDIENTE_INSTANCIA_TAREA->value())
                             ->required()
                             ->columnSpan(['sm' => 6, 'md' => 4, 'lg' => 2]),
@@ -109,17 +111,42 @@ class InstanciaTareaFlujoResource extends Resource
                             })
                             ->dehydrated(true)
                             ->preload()
+                            ->optionsLimit(10)
                             ->required()
+                            ->live()
                             ->columnSpan(['sm' => 6, 'md' => 4, 'lg' => 5]),
-                            Forms\Components\Select::make('asignado_a')
-                            ->relationship('asignadoA','name')
-                            ->searchable()
+                        Forms\Components\Select::make('asignado_a')
+                            ->relationship('asignadoA','name',
+                                function (Builder $query) {
+                                    $query->where('id', '!=', Auth::user()->id);
+                                })
+                            ->searchable()                            
                             ->preload()
+                            ->optionsLimit(10)
                             ->required()
                             ->columnSpan(['sm' => 6, 'md' => 4, 'lg' => 5]),
 
-                    ])
+                    ])                    
                     ->columns(12),
+                    Forms\Components\FileUpload::make('ruta_archivo')
+                        ->label('Adjunto')
+                        ->directory('tareas-archivos')
+                        ->acceptedFileTypes([
+                            'application/pdf',
+                            'application/msword',
+                            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+                            'application/vnd.ms-excel',
+                            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                            'application/vnd.ms-powerpoint',
+                            'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+                            'text/plain',
+                        ])
+                        ->maxSize(12288)
+                        ->downloadable()
+                        ->openable()
+                        ->columnSpanFull()
+                        ->live()
+                        ->helperText('Solo se permiten archivos de Office y txt. Tamaño máximo: 12MB')
             ]);
     }
 
@@ -184,7 +211,6 @@ class InstanciaTareaFlujoResource extends Resource
         return [
             'index' => Pages\ListInstanciaTareaFlujos::route('/'),
             'create' => Pages\CreateInstanciaTareaFlujo::route('/create'),
-            // 'view' => Pages\ViewInstanciaTareaFlujo::route('/{record}'),
             'edit' => Pages\EditInstanciaTareaFlujo::route('/{record}/edit'),
         ];
     }

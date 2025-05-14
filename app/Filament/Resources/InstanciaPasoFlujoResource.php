@@ -30,7 +30,9 @@ class InstanciaPasoFlujoResource extends Resource
         return $form
             ->schema([
                 Forms\Components\Select::make('instancia_flujo_trabajo_id')
-                    ->relationship('instanciaFlujoTrabajo', 'nombre')
+                    ->relationship('instanciaFlujoTrabajo', 'nombre', fn (Builder $query) => 
+                        $query->where('flujo_trabajo_id', '!=', GlobalEnums::FLUJO_GENERAL->value())
+                    )
                     ->live()
                     ->required(),
                 Forms\Components\TextInput::make('nombre')
@@ -73,11 +75,13 @@ class InstanciaPasoFlujoResource extends Resource
     {
         return $table
             ->modifyQueryUsing(function (Builder $query) {
-                return $query->where('id', '!=', GlobalEnums::INSTANCIA_PASO_GENERAL->value());
+                return $query->whereHas('instanciaFlujoTrabajo', function (Builder $query) {
+                    $query->where('flujo_trabajo_id', '!=', GlobalEnums::FLUJO_GENERAL->value());
+                });
             })
             ->columns([
                 Tables\Columns\TextColumn::make('instanciaFlujoTrabajo.consecutivo')
-                ->label('Id flujo')
+                ->label('Consecutivo')
                 ->sortable()
                 ->searchable()
                 ->sortable(),
@@ -113,11 +117,7 @@ class InstanciaPasoFlujoResource extends Resource
                     ->boolean()
                     ->trueIcon('heroicon-o-check-circle')
                     ->falseIcon('heroicon-o-x-circle')
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('consecutivo')
-                    ->searchable()
-                    ->sortable(),
-          
+                    ->sortable(),          
             ])
             ->filters([
                 //

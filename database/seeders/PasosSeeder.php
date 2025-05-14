@@ -14,15 +14,6 @@ class PasosSeeder extends Seeder
     public function run(): void
     {
 
-        // $pasoGeneral = new PasoFlujo();
-        // $pasoGeneral->id=1;
-        // $pasoGeneral->nombre = 'Paso general';
-        // $pasoGeneral->descripcion = 'En este paso se realizan tareas generales.';
-        // $pasoGeneral->orden = 1;
-        // $pasoGeneral->es_final = 0;
-        // $pasoGeneral->flujo_trabajo_id=1;
-        // $pasoGeneral->save();
-
 
         $paso1 = new PasoFlujo();
         $paso1->id=2;

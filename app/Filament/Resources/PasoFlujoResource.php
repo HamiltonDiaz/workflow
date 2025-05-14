@@ -61,9 +61,6 @@ class PasoFlujoResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->modifyQueryUsing(function (Builder $query) {
-                return $query->where('id', '!=', GlobalEnums::PASO_GENERAL->value());
-            })
             ->columns([
                 Tables\Columns\TextColumn::make('flujoTrabajo.nombre')
                     ->sortable()

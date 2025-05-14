@@ -62,7 +62,7 @@ class InstanciaFlujoTrabajoResource extends Resource
     {
         return $table
             ->modifyQueryUsing(function (Builder $query) {
-                return $query->where('id', '!=', GlobalEnums::INSTANCIA_FLUJO_GENERAL->value());
+                return $query->where('flujo_trabajo_id', '!=', GlobalEnums::FLUJO_GENERAL->value());
             })
             ->columns([
                 Tables\Columns\TextColumn::make('flujoTrabajo.nombre')

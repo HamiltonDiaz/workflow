@@ -16,4 +16,15 @@ class EditInstanciaTareaFlujo extends EditRecord
             Actions\DeleteAction::make(),
         ];
     }
+    
+    protected function afterSave(): void
+    {
+        // Forzar la actualización de los RelationManagers
+        $this->dispatch('refreshRelationManagers');
+    }
+
+    public function refreshRelationManagers(): void
+    {
+        $this->dispatch('refresh');
+    }
 }
